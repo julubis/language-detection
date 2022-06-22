@@ -1,7 +1,5 @@
 ## Language Detection Using Natural Language Processing (NLP)
 
----
-
 #### Team:
 
 *   Julkarnain
@@ -9,11 +7,9 @@
 
 #### Application:
 
-*   [https://lang-detection.netlify.app](https://lang-detection.netlify.app/)
+*   [https://detectlang.herokuapp.com](https://detectlang.herokuapp.com/)
 
 #### Source Code:
 
 *   [Github](https://github.com/julubis/language-detection)
 *   Google Colab
-*   [Frontend](https://github.com/julubis/lang-detection-vue)
-*   [Backend](https://replit.com/@AIProject1/lang)
