@@ -1,7 +1,20 @@
+import pickle
+import sklearn
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 
 app = FastAPI()
+
+pk_file = open('language_model.pk', 'rb')
+cv, model, le = pickle.load(pk_file)
+pk_file.close()
+
+def predict(text):
+    x = cv.transform([text]).toarray()
+    lang = model.predict(x)
+    lang = le.inverse_transform(lang)
+    return lang[0]
+
 html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -117,4 +130,5 @@ async def websocket_index(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
+        data = predict(data)
         await websocket.send_text(data)
