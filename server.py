@@ -74,6 +74,12 @@ html = """
                 socket: null,
                 state: 0
             },
+            watch: {
+                state: function() {
+                    if (!this.state) return this.$buefy.toast.open({message: "Connecting...", type: "is-warning", indefinite: true})
+                    this.$buefy.toast.open({message: "Disconnected", type: "is-danger", indefinite: true})
+                }
+            },
             methods: {
                 sendText: function() {
                     if (this.text.trim()) {
@@ -84,35 +90,25 @@ html = """
                 connect: function() {
                     this.socket = new WebSocket('wss://detectlang.herokuapp.com/')
                     this.state = this.socket.readyState
-                    if(!this.state) {
-                        this.$buefy.toast.open({
-                            message: "Connecting...",
-                            type: "is-warning",
-                            indefinite: true
-                        })
-                    }else if(this.state !== 1) {
-                        this.$buefy.toast.open({
-                            message: "Disconnected",
-                            type: "is-danger",
-                            indefinite: true
-                        })
-                    }
                     this.socket.onopen = (e) => {
                         this.state = 1
                         this.$buefy.toast.open({
                             message: "Connected",
-                            type: "is-success"
+                            type: "is-success",
+                            duration: 2000
                         })
                     }
                     this.socket.onmessage = (e) => {
                         this.lang = e.data
                         this.onDetect = false
                     }
-                    this.socket.onerror = (e) => {
-                        setTimeout(() => this.connect(), 2000)
-                    }
                     this.socket.onclose = (e) => {
-                        setTimeout(() => this.connect(), 2000)
+                        this.state = 2
+                        setTimeout(() => this.connect(), 5000)
+                    }
+                    this.socket.onerror = (e) => {
+                        this.state = 3
+                        setTimeout(() => this.connect(), 5000)
                     }
                 }
             },
