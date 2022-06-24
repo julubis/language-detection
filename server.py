@@ -77,7 +77,11 @@ html = """
             watch: {
                 state: function() {
                     if (!this.state) return this.$buefy.toast.open({message: "Connecting...", type: "is-warning", indefinite: true})
-                    else if(this.state !== 1) return this.$buefy.toast.open({message: "Disconnected", type: "is-danger", indefinite: true})
+                    if(this.state !== 1) {
+                        this.$buefy.toast.open({message: "Disconnected", type: "is-danger", indefinite: true})
+                    }else {
+                        this.$buefy.toast.open({message: "Connected", type: "is-success"})
+                    }
                 }
             },
             methods: {
@@ -92,11 +96,6 @@ html = """
                     this.state = this.socket.readyState
                     this.socket.onopen = (e) => {
                         this.state = 1
-                        this.$buefy.toast.open({
-                            message: "Connected",
-                            type: "is-success",
-                            duration: 2000
-                        })
                     }
                     this.socket.onmessage = (e) => {
                         this.lang = e.data
