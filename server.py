@@ -98,6 +98,7 @@ html = """
                         })
                     }
                     this.socket.onopen = (e) => {
+                        this.state = 1
                         this.$buefy.toast.open({
                             message: "Connected",
                             type: "is-success"
