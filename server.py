@@ -77,7 +77,7 @@ html = """
             watch: {
                 state: function() {
                     if (!this.state) return this.$buefy.toast.open({message: "Connecting...", type: "is-warning", indefinite: true})
-                    this.$buefy.toast.open({message: "Disconnected", type: "is-danger", indefinite: true})
+                    else if(this.state !== 1) return this.$buefy.toast.open({message: "Disconnected", type: "is-danger", indefinite: true})
                 }
             },
             methods: {
