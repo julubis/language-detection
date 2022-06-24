@@ -82,7 +82,7 @@ html = """
                     }
                 },
                 connect: function() {
-                    this.socket = new WebSocket('wss://lang.aiproject1.repl.co/identify')
+                    this.socket = new WebSocket('wss://detectlang.herokuapp.com/')
                     this.state = this.socket.readyState
                     if(!this.state) {
                         this.$buefy.toast.open({
