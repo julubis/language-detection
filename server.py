@@ -46,12 +46,12 @@ html = """
                         <div class="column is-two-thirds">
                             <div class="box">
                                 <b-tag v-if="text.trim()" type="is-primary" size="is-large">
-                                    <template v-if="!onDetect && isConnect">{{ lang }} Language</template>
+                                    <template v-if="!onDetect && state === 1">{{ lang }} Language</template>
                                     <template v-else>Loading...</template>
                                 </b-tag>
                                 <b-tag v-else type="is-primary" size="is-large">Input Text</b-tag>
                                 <b-field class="mt-3 mb-3">
-                                    <b-input v-on:input="tampilkan" v-model="text" type="textarea" :disabled="!isConnect"></b-input>
+                                    <b-input v-on:input="sendText" v-model="text" type="textarea" :disabled="state !== 1"></b-input>
                                 </b-field>
                             </div>
                         </div>
@@ -72,19 +72,32 @@ html = """
                 lang: '',
                 onDetect: false,
                 socket: null,
-                isConnect: false
+                state: 0
             },
             methods: {
-                tampilkan: function() {
+                sendText: function() {
                     if (this.text.trim()) {
                         this.onDetect = true
                         this.socket.send(this.text)
                     }
                 },
                 connect: function() {
-                    this.socket = new WebSocket('wss://detectlang.herokuapp.com')
+                    this.socket = new WebSocket('wss://lang.aiproject1.repl.co/identify')
+                    this.state = this.socket.readyState
+                    if(!this.state) {
+                        this.$buefy.toast.open({
+                            message: "Connecting...",
+                            type: "is-warning",
+                            indefinite: true
+                        })
+                    }else if(this.state !== 1) {
+                        this.$buefy.toast.open({
+                            message: "Disconnected",
+                            type: "is-danger",
+                            indefinite: true
+                        })
+                    }
                     this.socket.onopen = (e) => {
-                        this.isConnect = true
                         this.$buefy.toast.open({
                             message: "Connected",
                             type: "is-success"
@@ -95,19 +108,9 @@ html = """
                         this.onDetect = false
                     }
                     this.socket.onerror = (e) => {
-                        this.isConnect = false
-                        this.$buefy.toast.open({
-                            message: "Error",
-                            type: "is-danger"
-                        })
                         setTimeout(() => this.connect(), 2000)
                     }
                     this.socket.onclose = (e) => {
-                        this.isConnect = false
-                        this.$buefy.toast.open({
-                            message: "Disconnected",
-                            type: "is-danger"
-                        })
                         setTimeout(() => this.connect(), 2000)
                     }
                 }
