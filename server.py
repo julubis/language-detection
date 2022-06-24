@@ -72,7 +72,7 @@ html = """
                 lang: '',
                 onDetect: false,
                 socket: null,
-                state: 0
+                state: null
             },
             watch: {
                 state: function() {
